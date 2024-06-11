@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot - Mental Health Therapist</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/music.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Chatbot</h1>
+        <nav>
+            <ul id="list1">
+                <li><a class="item" href="/">Home</a></li>
+                <li><a class="item" href="/chatbot">Chatbot</a></li>
+                <li><a class="item" href="/audiobot">Audiobot</a></li>
+                <li><a class="item" href="/mood_trackers">Mood Tracker</a></li>
+                <li><a class="item" href="/music">Music Therapy</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div id="chat-container">
+            <div id="chatbox"></div>
+            <input type="text" id="user-input" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Mental Health Therapist. All rights reserved.</p>
+    </footer>
+    <script>
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input').value;
+            await fetch('/predict', {
+                method: 'POST',
+                body: new URLSearchParams({ 'message': userInput }),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).then(response => response.json())
+            .then(data => {
+                const chatbox = document.getElementById('chatbox');
+                chatbox.innerHTML += `<div><strong>You:</strong> ${userInput}</div>`;
+                chatbox.innerHTML += `<div><strong>Bot:</strong> ${data.response}</div>`;
+                document.getElementById('user-input').value = '';
+            });
+}
+
+    </script>
+</body>
+</html>

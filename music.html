@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music therapy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/music.css') }}">
+</head>
+<body>
+    <div class="icon">🎵</div>
+    <h1>Welcome to the Music Therapy Session</h1>
+    <p>Relax and enjoy the music.</p>
+    <div class="track">
+        <audio id="track1" src="C:\Users\Varshini\Downloads\TunePocket-Relaxing-Harp-Music-With-Nature-Sounds-1-Hour-Preview.mp3" preload="auto"></audio>
+        <audio id="track2" src="C:\Users\Varshini\Downloads\TunePocket-Healing-Energy-Frequencies-1-Hour-Preview.mp3" preload="auto"></audio>
+        <audio id="track3" src="C:\Users\Varshini\Downloads\TunePocket-Soothing-Guitar-Relaxation-1-Hour-Preview.mp3" preload="auto"></audio>
+        <audio id="track4" src="C:\Users\Varshini\Downloads\TunePocket-Floating-Relaxation-1-Hour-Preview.mp3" preload="auto"></audio>
+        <audio id="track5" src="C:\Users\Varshini\Downloads\TunePocket-Etherial-Piano-And-Flute-Relaxation-1-Hour-Preview.mp3" preload="auto"></audio>
+    </div>
+    <button onclick="playTrack('track1', 'nature')">Relaxation</button>
+    <button onclick="playTrack('track2', 'healing')">Healing Energy</button>
+    <button onclick="playTrack('track3', 'peaceful')">Soothing Guitar</button>
+    <button onclick="playTrack('track4', 'floating')">Floating Relaxation</button>
+    <button onclick="playTrack('track5', 'ethereal')">Ethereal Piano</button>
+    <br>
+    <button id="exitButton" onclick="exitSession()">Exit Session</button>
+
+    <div class="visual-effects" id="visualEffects"></div>
+
+    <script>
+        let currentAudio = null;
+
+        function playTrack(trackId, effectType) {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            currentAudio = document.getElementById(trackId);
+            currentAudio.play();
+            document.getElementById('exitButton').disabled = false;
+            addVisualEffects(effectType);
+        }
+
+        function exitSession() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            alert("Music therapy session has been stopped.");
+            document.getElementById('exitButton').disabled = true;
+            removeVisualEffects();
+        }
+
+        function addVisualEffects(effectType) {
+            const visualEffects = document.getElementById('visualEffects');
+            visualEffects.innerHTML = '';
+            let effectColor;
+
+            switch (effectType) {
+                case 'nature':
+                    effectColor = '#4caf50';
+                    break;
+                case 'healing':
+                    effectColor = '#ff80ab';
+                    break;
+                case 'peaceful':
+                    effectColor = '#ffab40';
+                    break;
+                case 'floating':
+                    effectColor = '#448aff';
+                    break;
+                case 'ethereal':
+                    effectColor = '#b388ff';
+                    break;
+                default:
+                    effectColor = '';
+            }
+
+            for (let i = 0; i < 10; i++) {
+                const effect = document.createElement('div');
+                effect.className = 'effect';
+                effect.style.background = radial-gradient(circle, `${effectColor}, rgba(255,255,255,0)`);
+                effect.style.left = `${Math.random() * 100}%`;
+                effect.style.top = `${Math.random() * 100}%`;
+                effect.style.width = `${Math.random() * 100 + 50}px`;
+                effect.style.height = effect.style.width;
+                visualEffects.appendChild(effect);
+            }
+        }
+
+        function removeVisualEffects() {
+            const visualEffects = document.getElementById('visualEffects');
+            visualEffects.innerHTML = '';
+        }
+    </script>
+</body>
+</html>

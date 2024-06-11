@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/music.css') }}">
+    <title>Audiobot</title>
+</head>
+<body>
+    <header>
+        <h1>Audiobot</h1>
+        <nav>
+            <ul id="list2">
+                <li><a class="item" href="/">Home</a></li>
+                <li><a class="item" href="/chatbot">Chatbot</a></li>
+                <li><a class="item" href="/audiobot">Audiobot</a></li>
+                <li><a class="item" href="/mood_trackers">Mood Tracker</a></li>
+                <li><a class="item" href="/music">Music Therapy</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="audiobot-container">
+        <p>Click the button and speak into your microphone.</p>
+        <button id="start-record-btn">Start Recording</button>
+        <button id="stop-record-btn" disabled>Stop Recording</button>
+        <div id="response"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Mental Health Therapist. All rights reserved.</p>
+    </footer>
+    <script>
+ const startRecordBtn = document.getElementById('start-record-btn');
+        const stopRecordBtn = document.getElementById('stop-record-btn');
+        const responseDiv = document.getElementById('response');
+
+        let recognition = new webkitSpeechRecognition();
+        let audioChunks = [];
+
+        recognition.onstart = function() {
+            console.log('Voice recognition activated.', audioChunks);
+        };
+
+        recognition.onresult = function(event) {
+            let current = event.resultIndex;
+            let transcript = event.results[current][0].transcript;
+            responseDiv.innerHTML = transcript;
+            console.log(transcript,"teaggv")
+        };
+
+        recognition.onspeechend = function() {
+            recognition.stop();
+            startRecordBtn.disabled = false;
+            stopRecordBtn.disabled = true;
+
+            const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+            sendData(audioBlob);
+            console.log(audioBlob,"BLOBBBBB")
+        };
+
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error:', event.error);
+        };
+
+        startRecordBtn.addEventListener('click', function() {
+            recognition.start();
+            startRecordBtn.disabled = true;
+            stopRecordBtn.disabled = false;
+            audioChunks = [];
+        });
+
+        stopRecordBtn.addEventListener('click', function() {
+            recognition.stop();
+            startRecordBtn.disabled = false;
+            stopRecordBtn.disabled = true;
+        });
+
+       async function sendData(audioBlob) {
+    const formData = new FormData();
+    formData.append('audio', audioBlob);
+console.log(formData,audioBlob,    formData.append('audio', audioBlob),"DATTATATATTA");
+    await fetch('/audio-bot', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        return response.blob();
+    })
+    
+    .catch(error => {
+        console.error('Error sending data:', error);
+    });
+}
+   
+    </script>
+</body>
+</html>

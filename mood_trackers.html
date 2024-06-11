@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mood Tracker - Mental Health Therapist</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/music.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Mood Tracker</h1>
+        <nav>
+            <ul id="list2">
+                <li><a class="item" href="/">Home</a></li>
+                <li><a class="item" href="/chatbot">Chatbot</a></li>
+                <li><a class="item" href="/audiobot">Audiobot</a></li>
+                <li><a class="item" href="/mood_tracker">Mood Tracker</a></li>
+                <li><a class="item" href="/music">Music Therapy</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div id="mood-tracker-container">
+            <input type="text" id="mood-input" placeholder="Enter your mood...">
+            <button onclick="recordMood()">Record Mood</button>
+            <button onclick="plotMoodData()">Show Mood Data</button>
+        </div>
+        <div id="mood-chart-container">
+            <img id="mood-chart" alt="Mood Chart">
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Mental Health Therapist. All rights reserved.</p>
+    </footer>
+    <script>
+        async function recordMood() {
+            const moodInput = document.getElementById('mood-input').value;
+            const response = await fetch('/record_mood', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ mood: moodInput })
+            });
+            const data = await response.json();
+            alert(data.message)
+        }
+
+        async function plotMoodData() {
+            const response = await fetch('/plot_mood_data');
+            const data = await response.json();
+            console.log(data);
+            document.getElementById('mood-chart').src = `data:image/png;base64, ${data.image}`;
+        }
+    </script>
+</body>
+</html>
